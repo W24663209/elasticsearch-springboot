@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.bensun.elasticsearch.mapper.sql.PolymerTempOrderMapper">
+
+    <select id="testSql" resultType="cn.bensun.elasticsearch.model.po.PolymerTempOrderPO">
+        SELECT merchant_id AS merchantId, create_time AS createTime, pay_channel AS payChannel FROM t_polymer_temp_order WHERE merchant_id = 3552758098124194 AND pay_channel = 'YONG_TONG_OCEANPAY_PAY_IN_904' LIMIT 1
+    </select>
+
+    <select id="queryOrderNumberByDay" resultType="cn.bensun.elasticsearch.model.dto.QueryOrderNumberByDayDTO">
+        select merchant_id merchantId,
+               count(1) orderNum
+        from t_polymer_temp_order
+        where create_time &gt;= #{startTime,jdbcType=BIGINT} and create_time &lt; #{endTime,jdbcType=BIGINT}
+        group by merchant_id
+        order by orderNum desc
+    </select>
+</mapper>

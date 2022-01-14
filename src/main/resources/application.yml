@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    es:
+      driver-class-name: org.elasticsearch.xpack.sql.jdbc.EsDriver
+      url: jdbc:es://http://127.0.0.1:9200
+      mapperLocations: classpath:mapper/sql/*.xml
+      configLocation: classpath:config/mybatis.cfg.xml
