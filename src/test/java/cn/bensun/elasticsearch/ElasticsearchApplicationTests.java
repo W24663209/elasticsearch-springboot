@@ -62,6 +62,7 @@ class ElasticsearchApplicationTests {
     }
 
     private void insert() {
+        elasticsearchRestTemplate.indexExists(PolymerPaymentOrderPO.class);
         elasticsearchRestTemplate.createIndex(PolymerPaymentOrderPO.class);
 //        elasticsearchRestTemplate.putMapping(PolymerPaymentOrderPO.class);
         for (int i = 1; i < 16; i++) {

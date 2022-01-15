@@ -7,7 +7,7 @@ import cn.bensun.elasticsearch.mapper.sql.PolymerPaymentOrderMapper;
 import cn.bensun.elasticsearch.mapper.sql.PolymerTempOrderMapper;
 import cn.bensun.elasticsearch.model.dto.QueryMerchantProportionDTO;
 import cn.bensun.elasticsearch.model.dto.QueryOrderNumberByDayDTO;
-import cn.bensun.elasticsearch.model.vo.Result;
+import cn.bensun.elasticsearch.model.dto.Result;
 import cn.bensun.elasticsearch.service.OrderService;
 import cn.bensun.elasticsearch.util.ResultUtil;
 import cn.hutool.core.util.ObjectUtil;

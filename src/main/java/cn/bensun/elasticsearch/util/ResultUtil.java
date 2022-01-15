@@ -1,7 +1,7 @@
 package cn.bensun.elasticsearch.util;
 
 import cn.bensun.elasticsearch.enums.ExceptionEnum;
-import cn.bensun.elasticsearch.model.vo.Result;
+import cn.bensun.elasticsearch.model.dto.Result;
 
 /**
  * @Description

@@ -1,7 +1,7 @@
 package cn.bensun.elasticsearch.controller;
 
 
-import cn.bensun.elasticsearch.model.vo.Result;
+import cn.bensun.elasticsearch.model.dto.Result;
 import cn.bensun.elasticsearch.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

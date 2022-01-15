@@ -1,6 +1,6 @@
 package cn.bensun.elasticsearch.service;
 
-import cn.bensun.elasticsearch.model.vo.Result;
+import cn.bensun.elasticsearch.model.dto.Result;
 
 import java.util.List;
 

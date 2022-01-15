@@ -1,4 +1,4 @@
-package cn.bensun.elasticsearch.model.vo;
+package cn.bensun.elasticsearch.model.dto;
 
 import lombok.Data;
 
