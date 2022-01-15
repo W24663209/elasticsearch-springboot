@@ -16,11 +16,11 @@ import java.sql.Timestamp;
  * @CreateTime 2022/01/15 14:00:55
  */
 @Data
-@Document(indexName = "t_save_request", type = "_doc")
+@Document(indexName = "t_request_log", type = "_doc")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveRequestPO {
+public class RequestLogPO {
     @Id
     private String orderNo;
 
@@ -39,7 +39,4 @@ public class SaveRequestPO {
     @Field(name = "createTime", value = "createTime")
     private Timestamp createTime;
 
-    public static void main(String[] args) {
-        System.out.println(new Timestamp(System.currentTimeMillis()));
-    }
 }

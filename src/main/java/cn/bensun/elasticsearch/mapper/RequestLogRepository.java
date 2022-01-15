@@ -1,6 +1,6 @@
 package cn.bensun.elasticsearch.mapper;
 
-import cn.bensun.elasticsearch.model.po.SaveRequestPO;
+import cn.bensun.elasticsearch.model.po.RequestLogPO;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
  * @CreatedBy weizongtang
  * @CreateTime 2022/12/31 13:23:58
  */
-public interface SaveRequestRepository extends ElasticsearchRepository<SaveRequestPO, String> {
+public interface RequestLogRepository extends ElasticsearchRepository<RequestLogPO, String> {
 
 }

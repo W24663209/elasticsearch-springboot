@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.bensun.elasticsearch.mapper.sql.RequestLogMapper">
+
+
+    <select id="queryList" resultType="cn.bensun.elasticsearch.model.dto.requestLog.QueryRequestLogDTO">
+        select orderNo,merchantId,url,req,res,createTime
+        from t_request_log
+        <where>
+            <if test="vo.orderNo!=null and vo.orderNo!=''">
+                orderNo = #{vo.orderNo,jdbcType=VARCHAR}
+            </if>
+            <if test="vo.merchantId != null">
+                and merchantId = #{vo.merchantId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+</mapper>
