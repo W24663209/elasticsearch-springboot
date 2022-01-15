@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class SaveRequestLogServiceImpl implements SaveRequestLogService {
             elasticsearchRestTemplate.createIndex(SaveRequestPO.class);
         }
         SaveRequestPO saveRequestPO = SaveRequestPO.builder().build();
+        saveRequestPO.setCreateTime(new Timestamp(System.currentTimeMillis()));
         BeanUtil.copyProperties(vo, saveRequestPO);
         saveRequestRepository.save(saveRequestPO);
         return ResultUtil.success();

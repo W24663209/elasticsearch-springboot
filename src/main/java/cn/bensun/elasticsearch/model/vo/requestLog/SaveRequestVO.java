@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Data
 public class SaveRequestVO implements Serializable {
     private String orderNo;
+    private Long merchantId;
     private String url;
     private String req;
     private String res;

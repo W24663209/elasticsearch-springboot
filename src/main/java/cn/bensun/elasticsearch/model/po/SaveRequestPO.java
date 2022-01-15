@@ -8,19 +8,24 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
+import java.sql.Timestamp;
+
 /**
  * @Description 保存请求日志
  * @CreatedBy weizongtang
  * @CreateTime 2022/01/15 14:00:55
  */
 @Data
-@Document(indexName = "t_save_request",type = "_doc")
+@Document(indexName = "t_save_request", type = "_doc")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaveRequestPO {
     @Id
     private String orderNo;
+
+    @Field(name = "merchantId", value = "merchantId")
+    private Long merchantId;
 
     @Field(name = "url", value = "url")
     private String url;
@@ -30,4 +35,11 @@ public class SaveRequestPO {
 
     @Field(name = "res", value = "res")
     private String res;
+
+    @Field(name = "createTime", value = "createTime")
+    private Timestamp createTime;
+
+    public static void main(String[] args) {
+        System.out.println(new Timestamp(System.currentTimeMillis()));
+    }
 }
