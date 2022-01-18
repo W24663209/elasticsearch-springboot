@@ -24,6 +24,8 @@ public class SaveOrderController {
     @PostMapping("/save/{className}")
     @ApiOperation(value = "保存订单")
     public boolean save(@PathVariable String className, @RequestBody Object vo) {
+        System.out.println(String.format("className:\t%s", className));
+        System.out.println(String.format("vo:\t%s", JSON.toJSONString(vo)));
         DependEnum dependEnum = DependEnum.getInstance(className);
         Object o = JSON.parseObject(JSON.toJSONString(vo), dependEnum.getPo());
         MyExceptionUtil.throwExIsNull(dependEnum, ExceptionEnum.NO_DEPEND);
