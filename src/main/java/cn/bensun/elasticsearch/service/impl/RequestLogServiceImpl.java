@@ -36,9 +36,6 @@ public class RequestLogServiceImpl implements RequestLogService {
      */
     @Override
     public Result save(SaveRequestVO vo) {
-        if (!elasticsearchRestTemplate.indexExists(RequestLogPO.class)) {
-            elasticsearchRestTemplate.createIndex(RequestLogPO.class);
-        }
         RequestLogPO requestLogPO = RequestLogPO.builder().build();
         requestLogPO.setCreateTime(new Timestamp(System.currentTimeMillis()));
         BeanUtil.copyProperties(vo, requestLogPO);
