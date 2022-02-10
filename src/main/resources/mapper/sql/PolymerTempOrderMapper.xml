@@ -14,4 +14,12 @@
         group by merchant_id
         order by orderNum desc
     </select>
+
+    <!--最近下单时间-->
+    <select id="queryPlaceOrderTime" resultType="java.lang.Long">
+        select create_time
+        from t_polymer_temp_order
+        where merchant_user_id = #{userId,jdbcType=BIGINT}
+        order by create_time desc limit 1
+    </select>
 </mapper>

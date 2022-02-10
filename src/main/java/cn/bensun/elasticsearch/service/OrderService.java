@@ -12,4 +12,11 @@ public interface OrderService {
      * @param ids
      */
     Result queryMerchantProportion(List<Long> ids);
+
+    /**
+     * @Description 最近下单时间
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/09 20:15:05
+     */
+    Result queryPlaceOrderTime(Long userId);
 }

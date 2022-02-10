@@ -105,7 +105,28 @@ public class OrderServiceImpl implements OrderService {
         QueryOrderNumberByDayDTO payOrderNum = payOrderNumMap.get(id);
         int successNum = (ObjectUtil.isNotEmpty(sellOrderNum) ? sellOrderNum.getOrderNum() : 0) + (ObjectUtil.isNotEmpty(payOrderNum) ? payOrderNum.getOrderNum() : 0);
         int totalNum = (ObjectUtil.isNotEmpty(sellTempOrderNum) ? sellTempOrderNum.getOrderNum() : 0) + (ObjectUtil.isNotEmpty(payTempOrderNum) ? payTempOrderNum.getOrderNum() : 0);
-        return BigDecimal.valueOf(successNum*1.0 / (totalNum == 0 ? 1 : totalNum));
+        return BigDecimal.valueOf(successNum * 1.0 / (totalNum == 0 ? 1 : totalNum));
+    }
+
+    /**
+     * @param userId
+     * @Description 最近下单时间
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/09 20:15:05
+     */
+    @Override
+    public Result queryPlaceOrderTime(Long userId) {
+        Long polymerInsteadOrderTime = polymerInsteadOrderMapper.queryPlaceOrderTime(userId);
+        Long polymerTempOrderTime = polymerTempOrderMapper.queryPlaceOrderTime(userId);
+        Long time;
+        if (ObjectUtil.isNotEmpty(polymerInsteadOrderTime) && ObjectUtil.isNotEmpty(polymerTempOrderTime)) {
+            time = polymerInsteadOrderTime > polymerTempOrderTime ? polymerInsteadOrderTime : polymerTempOrderTime;
+        } else if (ObjectUtil.isEmpty(polymerInsteadOrderTime)) {
+            time = polymerTempOrderTime;
+        } else {
+            time = polymerInsteadOrderTime;
+        }
+        return ResultUtil.success(time);
     }
 
     public static void main(String[] args) {

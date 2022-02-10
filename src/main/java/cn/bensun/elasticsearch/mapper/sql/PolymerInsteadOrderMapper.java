@@ -14,4 +14,11 @@ public interface PolymerInsteadOrderMapper {
      * @CreateTime 2022/12/31 18:52:22
      */
     List<QueryOrderNumberByDayDTO> queryOrderNumberByDay(@Param("startTime") Long startTime, @Param("endTime") Long endTime);
+
+    /**
+     * @Description 最近下单时间
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/09 20:16:11
+     */
+    Long queryPlaceOrderTime(Long userId);
 }
