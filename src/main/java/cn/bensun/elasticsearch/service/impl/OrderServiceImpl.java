@@ -7,6 +7,7 @@ import cn.bensun.elasticsearch.mapper.sql.PolymerPaymentOrderMapper;
 import cn.bensun.elasticsearch.mapper.sql.PolymerTempOrderMapper;
 import cn.bensun.elasticsearch.model.dto.QueryMerchantProportionDTO;
 import cn.bensun.elasticsearch.model.dto.QueryOrderNumberByDayDTO;
+import cn.bensun.elasticsearch.model.dto.QueryPlaceOrderTimeDTO;
 import cn.bensun.elasticsearch.model.dto.Result;
 import cn.bensun.elasticsearch.service.OrderService;
 import cn.bensun.elasticsearch.util.ResultUtil;
@@ -129,19 +130,40 @@ public class OrderServiceImpl implements OrderService {
         return ResultUtil.success(time);
     }
 
+    /**
+     * @param userIds
+     * @Description 最近下单时间(集合)
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/10 14:18:01
+     */
+    @Override
+    public Result queryPlaceOrderTimeList(List<Long> userIds) {
+        //值自然排序（倒序）
+        List<QueryPlaceOrderTimeDTO> list = new ArrayList<>();
+        for (Long userId : userIds) {
+            Long polymerInsteadOrderTime = polymerInsteadOrderMapper.queryPlaceOrderTime(userId);
+            Long polymerTempOrderTime = polymerTempOrderMapper.queryPlaceOrderTime(userId);
+            Long time;
+            if (ObjectUtil.isNotEmpty(polymerInsteadOrderTime) && ObjectUtil.isNotEmpty(polymerTempOrderTime)) {
+                time = polymerInsteadOrderTime > polymerTempOrderTime ? polymerInsteadOrderTime : polymerTempOrderTime;
+            } else if (ObjectUtil.isEmpty(polymerInsteadOrderTime)) {
+                time = polymerTempOrderTime;
+            } else {
+                time = polymerInsteadOrderTime;
+            }
+            time = ObjectUtil.isEmpty(time) ? 0 : time;
+            list.add(QueryPlaceOrderTimeDTO.builder().userId(userId).placeOrderTime(time).build());
+        }
+        System.out.println("最近下单时间(集合):\t"+list);
+        return ResultUtil.success(list);
+    }
+
     public static void main(String[] args) {
-        Calendar currentTime = AreaTimeEnum.AreaTimeZone.YD.getCurrentTime(new HashMap<>());
-        Calendar yesterdayCurrentTime = AreaTimeEnum.AreaTimeZone.YD.getCurrentTime(new HashMap<Integer, Integer>() {{
-            put(Calendar.DATE, -1);
-        }});
-        Calendar sevenDaysBeforeCurrentTime = AreaTimeEnum.AreaTimeZone.YD.getCurrentTime(new HashMap<Integer, Integer>() {{
-            put(Calendar.DATE, -7);
-        }});
-        long nowTime = AreaTimeEnum.AreaTimeZone.YD.getCalendar(currentTime.getTime(), AreaTimeEnum.FieldFormat.TIME_PATTERN_START).getTime();
-        long yesterdayTime = AreaTimeEnum.AreaTimeZone.YD.getCalendar(yesterdayCurrentTime.getTime(), AreaTimeEnum.FieldFormat.TIME_PATTERN_START).getTime();
-        long sevenDaysBeforeTime = AreaTimeEnum.AreaTimeZone.YD.getCalendar(sevenDaysBeforeCurrentTime.getTime(), AreaTimeEnum.FieldFormat.TIME_PATTERN_START).getTime();
-        System.out.println(nowTime);
-        System.out.println(yesterdayTime);
-        System.out.println(sevenDaysBeforeTime);
+        Map<Long, Long> map = new TreeMap<Long, Long>(Comparator.reverseOrder());
+        map.put(34L, 1L);
+        map.put(54L, 0L);
+        map.put(24L, 7L);
+        map.put(4L, 153L);
+        System.out.println(map);
     }
 }

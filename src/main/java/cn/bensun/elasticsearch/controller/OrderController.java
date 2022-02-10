@@ -42,4 +42,15 @@ public class OrderController {
     public Result queryPlaceOrderTime(@PathVariable Long userId) {
         return orderService.queryPlaceOrderTime(userId);
     }
+
+    /**
+     * @Description 最近下单时间(集合)
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/10 14:16:34
+     */
+    @PostMapping("/queryPlaceOrderTimeList")
+    @ApiOperation(value = "最近下单时间(集合)")
+    public Result queryPlaceOrderTimeList(@RequestBody List<Long> userIds) {
+        return orderService.queryPlaceOrderTimeList(userIds);
+    }
 }

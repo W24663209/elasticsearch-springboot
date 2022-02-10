@@ -19,4 +19,11 @@ public interface OrderService {
      * @CreateTime 2022/02/09 20:15:05
      */
     Result queryPlaceOrderTime(Long userId);
+
+    /**
+     * @Description 最近下单时间(集合)
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/02/10 14:18:01
+     */
+    Result queryPlaceOrderTimeList(List<Long> userIds);
 }
