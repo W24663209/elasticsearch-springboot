@@ -1,6 +1,7 @@
 package cn.bensun.elasticsearch.controller;
 
 
+import cn.bensun.elasticsearch.model.dto.QueryPlaceOrderTimeDTO;
 import cn.bensun.elasticsearch.model.dto.Result;
 import cn.bensun.elasticsearch.service.OrderService;
 import io.swagger.annotations.ApiOperation;
@@ -33,24 +34,13 @@ public class OrderController {
     }
 
     /**
-     * @Description 最近下单时间
-     * @CreatedBy weizongtang
-     * @CreateTime 2022/02/09 20:05:51
-     */
-    @PostMapping("/queryPlaceOrderTime/{userId}")
-    @ApiOperation(value = "queryPlaceOrderTime")
-    public Result queryPlaceOrderTime(@PathVariable Long userId) {
-        return orderService.queryPlaceOrderTime(userId);
-    }
-
-    /**
      * @Description 最近下单时间(集合)
      * @CreatedBy weizongtang
      * @CreateTime 2022/02/10 14:16:34
      */
     @PostMapping("/queryPlaceOrderTimeList")
     @ApiOperation(value = "最近下单时间(集合)")
-    public Result queryPlaceOrderTimeList(@RequestBody List<Long> userIds) {
+    public List<QueryPlaceOrderTimeDTO> queryPlaceOrderTimeList(@RequestBody List<Long> userIds) {
         return orderService.queryPlaceOrderTimeList(userIds);
     }
 }

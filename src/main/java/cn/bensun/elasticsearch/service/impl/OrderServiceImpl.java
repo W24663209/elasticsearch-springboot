@@ -110,34 +110,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * @param userId
-     * @Description 最近下单时间
-     * @CreatedBy weizongtang
-     * @CreateTime 2022/02/09 20:15:05
-     */
-    @Override
-    public Result queryPlaceOrderTime(Long userId) {
-        Long polymerInsteadOrderTime = polymerInsteadOrderMapper.queryPlaceOrderTime(userId);
-        Long polymerTempOrderTime = polymerTempOrderMapper.queryPlaceOrderTime(userId);
-        Long time;
-        if (ObjectUtil.isNotEmpty(polymerInsteadOrderTime) && ObjectUtil.isNotEmpty(polymerTempOrderTime)) {
-            time = polymerInsteadOrderTime > polymerTempOrderTime ? polymerInsteadOrderTime : polymerTempOrderTime;
-        } else if (ObjectUtil.isEmpty(polymerInsteadOrderTime)) {
-            time = polymerTempOrderTime;
-        } else {
-            time = polymerInsteadOrderTime;
-        }
-        return ResultUtil.success(time);
-    }
-
-    /**
      * @param userIds
      * @Description 最近下单时间(集合)
      * @CreatedBy weizongtang
      * @CreateTime 2022/02/10 14:18:01
      */
     @Override
-    public Result queryPlaceOrderTimeList(List<Long> userIds) {
+    public List<QueryPlaceOrderTimeDTO> queryPlaceOrderTimeList(List<Long> userIds) {
         //值自然排序（倒序）
         List<QueryPlaceOrderTimeDTO> list = new ArrayList<>();
         for (Long userId : userIds) {
@@ -155,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
             list.add(QueryPlaceOrderTimeDTO.builder().userId(userId).placeOrderTime(time).build());
         }
         System.out.println("最近下单时间(集合):\t"+list);
-        return ResultUtil.success(list);
+        return list;
     }
 
     public static void main(String[] args) {
