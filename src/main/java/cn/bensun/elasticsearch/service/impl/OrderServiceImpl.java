@@ -5,10 +5,8 @@ import cn.bensun.elasticsearch.mapper.sql.PolymerInsteadOrderMapper;
 import cn.bensun.elasticsearch.mapper.sql.PolymerOrderMapper;
 import cn.bensun.elasticsearch.mapper.sql.PolymerPaymentOrderMapper;
 import cn.bensun.elasticsearch.mapper.sql.PolymerTempOrderMapper;
-import cn.bensun.elasticsearch.model.dto.QueryMerchantProportionDTO;
-import cn.bensun.elasticsearch.model.dto.QueryOrderNumberByDayDTO;
-import cn.bensun.elasticsearch.model.dto.QueryPlaceOrderTimeDTO;
-import cn.bensun.elasticsearch.model.dto.Result;
+import cn.bensun.elasticsearch.model.dto.*;
+import cn.bensun.elasticsearch.model.vo.QueryPlaceOrderTimeByChannelVO;
 import cn.bensun.elasticsearch.service.OrderService;
 import cn.bensun.elasticsearch.util.ResultUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -133,8 +131,32 @@ public class OrderServiceImpl implements OrderService {
             time = ObjectUtil.isEmpty(time) ? 0 : time;
             list.add(QueryPlaceOrderTimeDTO.builder().userId(userId).placeOrderTime(time).build());
         }
-        System.out.println("最近下单时间(集合):\t"+list);
+        System.out.println("最近下单时间(集合):\t" + list);
         return list;
+    }
+
+    /**
+     * @param list
+     * @Description 最近下单时间(集合)通道
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/03/11 14:20:52
+     */
+    @Override
+    public List<QueryPlaceOrderTimeByChannelDTO> queryPlaceOrderTimeByChannelList(QueryPlaceOrderTimeByChannelVO vo) {
+        List<QueryPlaceOrderTimeByChannelDTO> resList = new ArrayList<>();
+        for (String payChannel : vo.getPayChannel()) {
+            Long polymerInsteadOrderTime = polymerInsteadOrderMapper.queryPlaceOrderTimeByChannel(vo.getUserId(),payChannel);
+            Long polymerTempOrderTime = polymerTempOrderMapper.queryPlaceOrderTimeByChannel(vo.getUserId(),payChannel);
+            Long time;
+            if (ObjectUtil.isEmpty(polymerInsteadOrderTime)) {
+                time = polymerTempOrderTime;
+            } else {
+                time = polymerInsteadOrderTime;
+            }
+            time = ObjectUtil.isEmpty(time) ? 0 : time;
+            resList.add(QueryPlaceOrderTimeByChannelDTO.builder().payChannel(payChannel).placeOrderTime(time).build());
+        }
+        return resList;
     }
 
     public static void main(String[] args) {

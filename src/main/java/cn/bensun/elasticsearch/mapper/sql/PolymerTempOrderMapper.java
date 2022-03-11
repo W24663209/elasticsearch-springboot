@@ -31,4 +31,11 @@ public interface PolymerTempOrderMapper {
      * @CreateTime 2022/02/09 20:16:55
      */
     Long queryPlaceOrderTime(Long userId);
+
+    /**
+     * @Description 最近下单时间(通道)
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/03/11 14:36:39
+     */
+    Long queryPlaceOrderTimeByChannel(@Param("userId") Long userId, @Param("payChannel") String payChannel);
 }

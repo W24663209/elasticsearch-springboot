@@ -1,8 +1,10 @@
 package cn.bensun.elasticsearch.controller;
 
 
+import cn.bensun.elasticsearch.model.dto.QueryPlaceOrderTimeByChannelDTO;
 import cn.bensun.elasticsearch.model.dto.QueryPlaceOrderTimeDTO;
 import cn.bensun.elasticsearch.model.dto.Result;
+import cn.bensun.elasticsearch.model.vo.QueryPlaceOrderTimeByChannelVO;
 import cn.bensun.elasticsearch.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +45,16 @@ public class OrderController {
     public List<QueryPlaceOrderTimeDTO> queryPlaceOrderTimeList(@RequestBody List<Long> userIds) {
         return orderService.queryPlaceOrderTimeList(userIds);
     }
+
+    /**
+     * @Description 最近下单时间(集合)通道
+     * @CreatedBy weizongtang
+     * @CreateTime 2022/03/11 14:16:12
+     */
+    @PostMapping("/queryPlaceOrderTimeByChannelList")
+    @ApiOperation(value = "最近下单时间(集合)通道")
+    public List<QueryPlaceOrderTimeByChannelDTO> queryPlaceOrderTimeByChannelList(@RequestBody QueryPlaceOrderTimeByChannelVO vo) {
+        return orderService.queryPlaceOrderTimeByChannelList(vo);
+    }
+
 }
