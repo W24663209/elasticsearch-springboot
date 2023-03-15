@@ -1,13 +1,13 @@
 package cn.bensun.elasticsearch.mapper;
 
-import cn.bensun.elasticsearch.model.po.RequestLogPO;
+import cn.bensun.elasticsearch.domain.Collection;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * @Description 保存请求日志
+ * @Description 代收正式订单-es
  * @CreatedBy weizongtang
  * @CreateTime 2022/12/31 13:23:58
  */
-public interface RequestLogRepository extends ElasticsearchRepository<RequestLogPO, String> {
+public interface CollectionRepository extends ElasticsearchRepository<Collection, String> {
 
 }

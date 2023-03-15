@@ -1,15 +1,13 @@
 package cn.bensun.elasticsearch;
 
-import cn.bensun.elasticsearch.mapper.PolymerPaymentOrderRepository;
-import cn.bensun.elasticsearch.mapper.sql.PolymerTempOrderMapper;
-import cn.bensun.elasticsearch.model.po.PolymerPaymentOrderPO;
-import cn.hutool.core.io.FileUtil;
-import com.alibaba.fastjson.JSON;
-import com.google.common.base.Charsets;
+import cn.bensun.elasticsearch.domain.Collection;
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ExitCodeEvent;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
 import java.io.File;
@@ -20,18 +18,15 @@ import java.util.List;
 @SpringBootTest(classes = ElasticsearchApplication.class)
 class ElasticsearchApplicationTests {
 
-    @Autowired
-    private PolymerPaymentOrderRepository polymerOrderRepository;
 
     @Autowired
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
+//
+//    @Autowired
+//    private RestHighLevelClient restHighLevelClient;
 
     @Autowired
-    private RestHighLevelClient restHighLevelClient;
-
-    @Autowired
-    private PolymerTempOrderMapper polymerTempOrderMapper;
-
+    private RestClient restClient;
 //    @Autowired
 //    private TestRepository testRepository;
 
@@ -61,25 +56,12 @@ class ElasticsearchApplicationTests {
 //        System.out.println(queryOrderNumberByDayDTOS);
     }
 
-    private void insert() {
-        elasticsearchRestTemplate.indexExists(PolymerPaymentOrderPO.class);
-        elasticsearchRestTemplate.createIndex(PolymerPaymentOrderPO.class);
-//        elasticsearchRestTemplate.putMapping(PolymerPaymentOrderPO.class);
-        for (int i = 1; i < 16; i++) {
-            List<String> strings = FileUtil.readLines(new File(String.format("/Volumes/USB/project/elasticsearch-python/static/%s.json", i)), Charsets.UTF_8);
-            List<PolymerPaymentOrderPO> list = JSON.parseArray(strings.get(0), PolymerPaymentOrderPO.class);
-            List<PolymerPaymentOrderPO> saveList = new ArrayList<>();
-            for (PolymerPaymentOrderPO polymerTempOrderPO : list) {
-                if (saveList.size() >= 10000) {
-                    polymerOrderRepository.saveAll(saveList);
-                    saveList.clear();
-                }
-                saveList.add(polymerTempOrderPO);
-            }
-            if (saveList.size() > 0) {
-                polymerOrderRepository.saveAll(saveList);
-            }
-        }
+
+
+    @Test
+    public void insert() throws IOException {
+        elasticsearchRestTemplate.createIndex(Collection.class);
+//        elasticsearchRestTemplate.createIndex(Collection.class);
     }
 
 }

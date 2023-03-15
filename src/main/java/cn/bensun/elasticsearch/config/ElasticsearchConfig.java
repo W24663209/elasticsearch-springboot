@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 
 /**
@@ -30,4 +31,9 @@ public class ElasticsearchConfig {
             throw new IllegalStateException(ex);
         }
     }
+
+//    @Bean
+//    public ElasticsearchRestTemplate elasticsearchRestTemplate(RestHighLevelClient elasticsearchClient, EntityMapper entityMapper){
+//        return new ElasticsearchRestTemplate(elasticsearchClient,entityMapper);
+//    }
 }
