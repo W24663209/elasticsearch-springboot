@@ -23,7 +23,7 @@ import java.util.Map;
 @RequestMapping("/sync")
 @Slf4j
 public class SyncController {
-    private static final String host = "http://127.0.0.1:8081";
+    private static final String host = "http://canal-adapter:8081";
     @Autowired
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
