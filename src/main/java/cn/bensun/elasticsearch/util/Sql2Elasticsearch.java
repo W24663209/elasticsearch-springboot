@@ -121,7 +121,7 @@ public class Sql2Elasticsearch {
         Connection con = DriverManager.getConnection(url, username, password);
         Statement stmt = con.createStatement();
         String dbName = "yd";
-        String tableName = "t_collection";
+        String tableName = "t_payment";
         String sql = "select COLUMN_NAME, DATA_TYPE, COLUMN_COMMENT, COLUMN_KEY\n" +
                 "from information_schema.COLUMNS\n" +
                 "where TABLE_SCHEMA = '%s'\n" +
