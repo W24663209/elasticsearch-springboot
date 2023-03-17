@@ -18,7 +18,7 @@ public class Collection extends BaseEntity {
     @Id
     private String id;//主键
 
-    @Field(name = "order_no", value = "order_no", type = FieldType.Text)
+    @Field(name = "order_no", value = "order_no", type = FieldType.Keyword)
     private String orderNo;//平台订单号
 
     @Field(name = "superior_no", value = "superior_no", type = FieldType.Text)

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @Description
  * @author weizongtang
+ * @Description
  * @CreateTime 2023/03/13 17:42:45
  */
 @Service
@@ -19,5 +19,4 @@ public class CollectionServiceImpl implements ICollectionService {
 
     @Autowired
     private CollectionRepository collectionRepository;
-
 }

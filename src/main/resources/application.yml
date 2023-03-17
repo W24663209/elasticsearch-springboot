@@ -1,4 +1,4 @@
 # Spring配置
 spring:
   profiles:
-    active: 'prod'
+    active: 'dev'

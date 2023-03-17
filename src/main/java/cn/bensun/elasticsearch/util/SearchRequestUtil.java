@@ -9,8 +9,12 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.sum.ParsedSum;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -38,7 +42,12 @@ public class SearchRequestUtil {
         SearchRequestUtil.restHighLevelClient = restHighLevelClient;
     }
 
-    public static <T> TableDataInfo search(T obj, ColumnUtil.SFunction<T, ?> fn) throws Exception {
+    /**
+     * @Description 列表查询
+     * @author weizongtang
+     * @CreateTime 2023/03/17 15:51:09
+     */
+    public static <T> TableDataInfo search(T obj, ColumnUtil.SFunction<T, ?> sort) throws Exception {
         List<T> list = new ArrayList<>();
         Class<?> clazz = obj.getClass();
         Field pageNumberField = clazz.getSuperclass().getDeclaredField("pageNumber");
@@ -51,13 +60,14 @@ public class SearchRequestUtil {
         // termQuery: 精确查询
         // SpanTermQuery: 词距查询
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             if (field.isAnnotationPresent(org.springframework.data.elasticsearch.annotations.Field.class)) {
                 org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
-                    searchSourceBuilder.query(QueryBuilders.matchQuery(fieldAnnotation.name(), value));
+                    boolQueryBuilder.must(QueryBuilders.termQuery(fieldAnnotation.name(), value));
                 }
             }
         }
@@ -68,22 +78,21 @@ public class SearchRequestUtil {
             if (ObjectUtil.isNotEmpty(value)) {
                 if ("searchStartTime".equalsIgnoreCase(field.getName())) {
                     searchTime.add(value);
-                    //searchSourceBuilder.query(QueryBuilders.rangeQuery("created_time").from(value));
                 } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
                     searchTime.add(value);
-                    //searchSourceBuilder.query(QueryBuilders.rangeQuery("created_time").to(value));
                 }
             }
         }
         if (searchTime.size() == 1) {
-            searchSourceBuilder.query(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
         } else if (searchTime.size() == 2) {
-            searchSourceBuilder.query(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
         }
-        searchSourceBuilder.sort(new FieldSortBuilder(ColumnUtil.getFieldName(fn)).order(SortOrder.DESC));
+        searchSourceBuilder.sort(new FieldSortBuilder(ColumnUtil.getFieldName(sort)).order(SortOrder.DESC));
         int pageNumber = pageNumberField.getInt(obj);
         int pageSize = pageSizeField.getInt(obj);
         searchSourceBuilder.from((pageNumber - 1) * pageSize).size(pageSize);
+        searchSourceBuilder.query(boolQueryBuilder);
         searchRequest.source(searchSourceBuilder);
         log.info("查询mapping:{}", searchSourceBuilder);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
@@ -95,6 +104,86 @@ public class SearchRequestUtil {
             list.add((T) JSON.to(clazz, jsonObject));
         }
         return TableDataInfo.getInstance(list, totalCount);
+    }
+
+
+    /**
+     * @Description 聚合查询
+     * @author weizongtang
+     * @CreateTime 2023/03/17 15:53:14
+     */
+    public static <T> List<T> searchAggregation(T obj, ColumnUtil.SFunction<T, ?>... aggres) throws Exception {
+        List<T> list = new ArrayList<>();
+        Class<?> clazz = obj.getClass();
+        Document annotation = clazz.getAnnotation(Document.class);
+        SearchRequest searchRequest = new SearchRequest(annotation.indexName());
+        searchRequest.types(annotation.type());
+        // termQuery: 精确查询
+        // SpanTermQuery: 词距查询
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        List<Field> fields = new ArrayList<>();
+        {
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                fields.add(field);
+                if (field.isAnnotationPresent(org.springframework.data.elasticsearch.annotations.Field.class)) {
+                    org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
+                    Object value = field.get(obj);
+                    if (ObjectUtil.isNotEmpty(value)) {
+                        boolQueryBuilder.must(QueryBuilders.matchQuery(fieldAnnotation.name(), value));
+                    }
+                }
+            }
+        }
+        {
+            if (aggres != null) {
+                for (ColumnUtil.SFunction<T, ?> aggre : aggres) {
+                    searchSourceBuilder.aggregation(AggregationBuilders.sum(ColumnUtil.getFieldName(aggre)).field(ColumnUtil.getFieldName(aggre)));
+                }
+            }
+        }
+        List<Object> searchTime = new ArrayList<>();
+        {
+            for (Field field : clazz.getSuperclass().getDeclaredFields()) {
+                field.setAccessible(true);
+                Object value = field.get(obj);
+                if (ObjectUtil.isNotEmpty(value)) {
+                    if ("searchStartTime".equalsIgnoreCase(field.getName())) {
+                        searchTime.add(value);
+                    } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
+                        searchTime.add(value);
+                    }
+                }
+            }
+            if (searchTime.size() == 1) {
+                boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
+            } else if (searchTime.size() == 2) {
+                boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
+            }
+        }
+        searchSourceBuilder.query(boolQueryBuilder);
+        searchRequest.source(searchSourceBuilder);
+        log.info("查询mapping:{}", searchSourceBuilder);
+        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        //计算总页数
+        for (Aggregation aggregation : searchResponse.getAggregations()) {
+            ParsedSum parsedSum = (ParsedSum) aggregation;
+            T o = (T) clazz.getDeclaredConstructor().newInstance();
+            String name = parsedSum.getName();
+            double value = parsedSum.getValue();
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(org.springframework.data.elasticsearch.annotations.Field.class)) {
+                    org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
+                    if (fieldAnnotation.name().equalsIgnoreCase(name)) {
+                        field.set(o, value);
+                    }
+                }
+            }
+            list.add(o);
+            System.out.println(aggregation);
+        }
+        return list;
     }
 
     public static void main(String[] args) {

@@ -23,11 +23,18 @@ public class BaseEntity implements Serializable {
      */
     private String createBy;
 
-    private int pageNumber = 0;
+    private int pageNumber = 1;
     private int pageSize = 10;
 
     private Long searchStartTime;
 
     private Long searchEndTime;
 
+    public void setSearchStartTime(Long searchStartTime) {
+        this.searchStartTime = searchStartTime != null ? Long.valueOf(String.valueOf(searchStartTime).substring(0, 10)) : searchStartTime;;
+    }
+
+    public void setSearchEndTime(Long searchEndTime) {
+        this.searchEndTime = searchEndTime != null ? Long.valueOf(String.valueOf(searchEndTime).substring(0, 10)) : searchEndTime;;
+    }
 }
