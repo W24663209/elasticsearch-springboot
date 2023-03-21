@@ -139,4 +139,8 @@ public class Collection extends BaseEntity {
     @Field(name = "superior_setlle_status", value = "superior_setlle_status", type = FieldType.Text)
     private String superiorSetlleStatus;//
 
+
+    public void setCreatedTime(Long createdTime) {
+        this.createdTime = Long.valueOf(String.valueOf(createdTime).substring(0,10));
+    }
 }
