@@ -29,6 +29,11 @@
         <fastjson2>2.0.15</fastjson2>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.yomahub</groupId>
+            <artifactId>tlog-all-spring-boot-starter</artifactId>
+            <version>1.5.0</version>
+        </dependency>
         <!--在pom.xml中添加依赖-->
         <dependency>
             <groupId>org.apache.rocketmq</groupId>
@@ -121,6 +126,10 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
 
         <!-- hutool -->

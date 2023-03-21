@@ -30,6 +30,9 @@ public class BaseEntity implements Serializable {
 
     private Long searchEndTime;
 
+    //聚合字段
+    private Long count;
+
     public void setSearchStartTime(Long searchStartTime) {
         this.searchStartTime = searchStartTime != null ? Long.valueOf(String.valueOf(searchStartTime).substring(0, 10)) : searchStartTime;;
     }

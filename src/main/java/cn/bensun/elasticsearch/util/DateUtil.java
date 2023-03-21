@@ -66,7 +66,7 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
      * @CreateTime 2022/11/16 15:55:40
      */
     public static long timestampAdd(Long ldt, long addDay) {
-        return ldt + (60 * 60 * 24 * 1000 * addDay);
+        return ldt + (60 * 60 * 24 * addDay);
     }
 
     /**

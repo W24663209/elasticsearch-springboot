@@ -27,6 +27,6 @@ public class PaymentController {
     @GetMapping("/list")
     @ApiOperation("查询代收列表")
     public TableDataInfo list(Payment payment) throws Exception {
-        return SearchRequestUtil.search(payment, Payment::getCreatedTime);
+        return SearchRequestUtil.searchList(Payment.class, payment);
     }
 }

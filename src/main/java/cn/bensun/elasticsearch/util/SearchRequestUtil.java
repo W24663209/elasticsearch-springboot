@@ -25,6 +25,8 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author weizongtang
@@ -47,9 +49,8 @@ public class SearchRequestUtil {
      * @author weizongtang
      * @CreateTime 2023/03/17 15:51:09
      */
-    public static <T> TableDataInfo search(T obj, ColumnUtil.SFunction<T, ?> sort) throws Exception {
+    public static <T> TableDataInfo searchList(Class<T> clazz, T obj) throws Exception {
         List<T> list = new ArrayList<>();
-        Class<?> clazz = obj.getClass();
         Field pageNumberField = clazz.getSuperclass().getDeclaredField("pageNumber");
         pageNumberField.setAccessible(true);
         Field pageSizeField = clazz.getSuperclass().getDeclaredField("pageSize");
@@ -67,7 +68,7 @@ public class SearchRequestUtil {
                 org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
-                    boolQueryBuilder.must(QueryBuilders.termQuery(fieldAnnotation.name(), value));
+                    boolQueryBuilder.must(QueryBuilders.matchQuery(fieldAnnotation.name(), String.valueOf(value)));
                 }
             }
         }
@@ -79,7 +80,7 @@ public class SearchRequestUtil {
                 if ("searchStartTime".equalsIgnoreCase(field.getName())) {
                     searchTime.add(value);
                 } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
-                    searchTime.add(value);
+                    searchTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
                 }
             }
         }
@@ -88,10 +89,12 @@ public class SearchRequestUtil {
         } else if (searchTime.size() == 2) {
             boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
         }
-        searchSourceBuilder.sort(new FieldSortBuilder(ColumnUtil.getFieldName(sort)).order(SortOrder.DESC));
+        searchSourceBuilder.sort(new FieldSortBuilder("created_time").order(SortOrder.DESC));
         int pageNumber = pageNumberField.getInt(obj);
         int pageSize = pageSizeField.getInt(obj);
-        searchSourceBuilder.from((pageNumber - 1) * pageSize).size(pageSize);
+        if (pageNumber != -1) {
+            searchSourceBuilder.from((pageNumber - 1) * pageSize).size(pageSize);
+        }
         searchSourceBuilder.query(boolQueryBuilder);
         searchRequest.source(searchSourceBuilder);
         log.info("查询mapping:{}", searchSourceBuilder);
@@ -101,7 +104,7 @@ public class SearchRequestUtil {
         SearchHit[] hits = searchResponse.getHits().getHits();
         for (SearchHit hit : hits) {
             JSONObject jsonObject = JSONObject.parseObject(hit.getSourceAsString());
-            list.add((T) JSON.to(clazz, jsonObject));
+            list.add(JSON.to(clazz, jsonObject));
         }
         return TableDataInfo.getInstance(list, totalCount);
     }
@@ -112,9 +115,7 @@ public class SearchRequestUtil {
      * @author weizongtang
      * @CreateTime 2023/03/17 15:53:14
      */
-    public static <T> List<T> searchAggregation(T obj, ColumnUtil.SFunction<T, ?>... aggres) throws Exception {
-        List<T> list = new ArrayList<>();
-        Class<?> clazz = obj.getClass();
+    public static <T> T searchAggregation(Class<?> clazz, T obj) throws Exception {
         Document annotation = clazz.getAnnotation(Document.class);
         SearchRequest searchRequest = new SearchRequest(annotation.indexName());
         searchRequest.types(annotation.type());
@@ -123,30 +124,31 @@ public class SearchRequestUtil {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         List<Field> fields = new ArrayList<>();
-        {
+        ClassLoader classLoader = clazz.getClassLoader();
+        while (classLoader.equals(clazz.getClassLoader())) {
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true);
                 fields.add(field);
+            }
+            clazz = clazz.getSuperclass();
+        }
+        {
+            for (Field field : fields) {
                 if (field.isAnnotationPresent(org.springframework.data.elasticsearch.annotations.Field.class)) {
                     org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
                     Object value = field.get(obj);
                     if (ObjectUtil.isNotEmpty(value)) {
                         boolQueryBuilder.must(QueryBuilders.matchQuery(fieldAnnotation.name(), value));
                     }
-                }
-            }
-        }
-        {
-            if (aggres != null) {
-                for (ColumnUtil.SFunction<T, ?> aggre : aggres) {
-                    searchSourceBuilder.aggregation(AggregationBuilders.sum(ColumnUtil.getFieldName(aggre)).field(ColumnUtil.getFieldName(aggre)));
+                    if (field.getType().equals(Double.class)){
+                        searchSourceBuilder.aggregation(AggregationBuilders.sum(fieldAnnotation.name()).field(fieldAnnotation.name()));
+                    }
                 }
             }
         }
         List<Object> searchTime = new ArrayList<>();
         {
-            for (Field field : clazz.getSuperclass().getDeclaredFields()) {
-                field.setAccessible(true);
+            for (Field field : fields) {
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
                     if ("searchStartTime".equalsIgnoreCase(field.getName())) {
@@ -166,10 +168,12 @@ public class SearchRequestUtil {
         searchRequest.source(searchSourceBuilder);
         log.info("查询mapping:{}", searchSourceBuilder);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        Map<String, Field> fieldMap = fields.stream().collect(Collectors.toMap(Field::getName, e -> e));
         //计算总页数
+        T o = (T) obj.getClass().getDeclaredConstructor().newInstance();
+        fieldMap.get("count").set(o, searchResponse.getHits().getTotalHits());
         for (Aggregation aggregation : searchResponse.getAggregations()) {
             ParsedSum parsedSum = (ParsedSum) aggregation;
-            T o = (T) clazz.getDeclaredConstructor().newInstance();
             String name = parsedSum.getName();
             double value = parsedSum.getValue();
             for (Field field : fields) {
@@ -180,10 +184,8 @@ public class SearchRequestUtil {
                     }
                 }
             }
-            list.add(o);
-            System.out.println(aggregation);
         }
-        return list;
+        return o;
     }
 
     public static void main(String[] args) {
