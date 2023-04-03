@@ -1,7 +1,6 @@
 package cn.bensun.elasticsearch.service.impl;
 
 import cn.bensun.elasticsearch.mapper.CollectionRepository;
-import cn.bensun.elasticsearch.mapper.sql.CollectionMapper;
 import cn.bensun.elasticsearch.service.ICollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CollectionServiceImpl implements ICollectionService {
-
-    @Autowired
-    private CollectionMapper collectionMapper;
 
     @Autowired
     private CollectionRepository collectionRepository;

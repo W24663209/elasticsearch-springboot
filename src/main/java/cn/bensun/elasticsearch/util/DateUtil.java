@@ -105,6 +105,21 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
     }
 
     /**
+     * @Description 字符串转时间
+     * @author weizongtang
+     * @CreateTime 2022/12/07 13:59:08
+     */
+    public static Date str2Time(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * @Description 添加时间, 秒
      * @author weizongtang
      * @CreateTime 2023/02/07 15:45:00

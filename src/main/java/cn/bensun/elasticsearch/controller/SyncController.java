@@ -1,5 +1,6 @@
 package cn.bensun.elasticsearch.controller;
 
+import cn.bensun.elasticsearch.mapper.CollectionRepository;
 import cn.bensun.elasticsearch.mapper.PaymentRepository;
 import cn.hutool.http.HttpUtil;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,9 @@ public class SyncController {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private CollectionRepository collectionRepository;
+
 
     /**
      * @Description 同步代收
@@ -39,19 +43,25 @@ public class SyncController {
     @GetMapping("/collection/{timestamp}")
     @ApiOperation(value = "同步代收")
     public String collection(@PathVariable Long timestamp) {
+        if (timestamp == 0){
+            collectionRepository.deleteAll();
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("params", timestamp);
         return HttpUtil.post(host + "/etl/es6/t_collection.yml", data);
     }
 
     /**
-     * @Description 同步代收
+     * @Description 同步代付
      * @CreatedBy weizongtang
      * @CreateTime 2023/03/16 12:57:13
      */
     @GetMapping("/payment/{timestamp}")
-    @ApiOperation(value = "同步代收")
+    @ApiOperation(value = "同步代付")
     public String payment(@PathVariable Long timestamp) {
+        if (timestamp == 0) {
+            paymentRepository.deleteAll();
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("params", timestamp);
         return HttpUtil.post(host + "/etl/es6/t_payment.yml", data);

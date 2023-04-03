@@ -23,9 +23,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * @Description 代付下单
- * @CreatedBy weizongtang
- * @CreateTime 2022/10/22 16:12:02
+ * @Description 同步到数据库
+ * @author weizongtang
+ * @CreateTime 2023/04/03 13:34:10
  */
 @Component
 @Slf4j

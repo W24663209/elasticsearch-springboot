@@ -11,5 +11,7 @@ public class RocketMQTopicConstants {
 
     public static final String 同步es主题 = "sync_es_topic";
     public static final String 同步es订阅组 = "group_sync_es_topic";
+    public static final String 日志主题 = "log_topic";
+    public static final String 日志主题订阅组 = "group_log_topic";
 
 }
