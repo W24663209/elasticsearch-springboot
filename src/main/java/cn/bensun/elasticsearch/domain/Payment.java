@@ -144,6 +144,11 @@ public class Payment extends BaseEntity{
 
     @Field(name = "is_refund", value = "is_refund", type = FieldType.Text)
     private String isRefund;//;-SwitchStatusEnum
+    @Field(name = "is_callback", value = "is_callback", type = FieldType.Text)
+    private String isCallback;
+    @Field(name = "request_id", value = "request_id", type = FieldType.Text)
+    private String requestId;
+
 
     public void setCreatedTime(Long createdTime) {
         this.createdTime = Long.valueOf(String.valueOf(createdTime).substring(0,10));

@@ -138,6 +138,11 @@ public class Collection extends BaseEntity {
 
     @Field(name = "superior_setlle_status", value = "superior_setlle_status", type = FieldType.Text)
     private String superiorSetlleStatus;//
+    @Field(name = "is_callback", value = "is_callback", type = FieldType.Text)
+    private String isCallback;
+    @Field(name = "request_id", value = "request_id", type = FieldType.Text)
+    private String requestId;
+
 
 
     public void setCreatedTime(Long createdTime) {

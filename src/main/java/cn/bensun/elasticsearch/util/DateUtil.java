@@ -110,7 +110,7 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
      * @CreateTime 2022/12/07 13:59:08
      */
     public static Date str2Time(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
             return sdf.parse(time);
         } catch (ParseException e) {
@@ -175,8 +175,6 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
     }
 
     public static void main(String[] args) {
-        for (Long aLong : getRecentMonth()) {
-            System.out.println(timeToTime(aLong, TimeZoneEnum.中国));
-        }
+        System.out.println(str2Time("2021-01-01 00:00:00.425").getTime());
     }
 }

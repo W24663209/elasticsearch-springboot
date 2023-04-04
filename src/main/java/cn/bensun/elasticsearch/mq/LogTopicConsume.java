@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author weizongtang
  * @Description 日志主题
@@ -26,6 +29,8 @@ public class LogTopicConsume {
 
     @Autowired
     private LogMsgRepository logMsgRepository;
+    Pattern pattern = Pattern.compile("\"requestId\":\"(.*?)\".*?\"create_time\":\"(.*?)\".*?\"msg\":\"(.*)\"");
+
     /**
      * @author weizongtang
      * @Description
@@ -51,7 +56,19 @@ public class LogTopicConsume {
                 }
                 logMsgRepository.save(logMsg);
             } catch (Exception e) {
-
+                Matcher matcher = pattern.matcher(str);
+                if (matcher.find()) {
+                    String requestId = matcher.group(1);
+                    String createTime = matcher.group(2);
+                    String msg = matcher.group(3);
+                    logMsg = new LogMsg();
+                    logMsg.setRequestId(requestId);
+                    if (createTime != null) {
+                        logMsg.setCreatedTime(DateUtil.str2Time(createTime).getTime());
+                    }
+                    logMsg.setMsg(msg);
+                    logMsgRepository.save(logMsg);
+                }
             }
         }
     }
