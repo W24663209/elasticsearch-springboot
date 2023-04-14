@@ -28,9 +28,9 @@ public class ApiController {
      */
     @PostMapping("/list/{table}")
     @ApiOperation(value = "列表查询")
-    public TableDataInfo list(@PathVariable String table,@RequestBody JSONObject req) throws Exception {
+    public TableDataInfo list(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj =(BaseEntity) JSON.to(clazz, req);
+        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
         return SearchRequestUtil.searchList(BeanUtil.getTable(table), obj);
     }
 
@@ -41,10 +41,15 @@ public class ApiController {
      */
     @PostMapping("/group/{table}")
     @ApiOperation(value = "分组查询")
-    public BaseEntity group(@PathVariable String table,@RequestBody JSONObject req) throws Exception {
+    public BaseEntity group(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj =(BaseEntity) JSON.to(clazz, req);
-        obj.setSearchEndTime(DateUtil.timestampAdd(obj.getSearchStartTime(), 1));
+        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
+        if (obj.getSearchStartTime()!=null){
+            obj.setSearchEndTime(DateUtil.timestampAdd(obj.getSearchStartTime(), 1));
+        }
+        if (obj.getSearchPayStartTime()!=null){
+            obj.setSearchPayEndTime(DateUtil.timestampAdd(obj.getSearchPayStartTime(), 1));
+        }
         return SearchRequestUtil.searchAggregation(clazz, obj);
     }
 }
