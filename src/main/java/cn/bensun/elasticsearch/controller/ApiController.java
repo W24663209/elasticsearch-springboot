@@ -3,7 +3,6 @@ package cn.bensun.elasticsearch.controller;
 import cn.bensun.elasticsearch.domain.BaseEntity;
 import cn.bensun.elasticsearch.domain.TableDataInfo;
 import cn.bensun.elasticsearch.util.BeanUtil;
-import cn.bensun.elasticsearch.util.DateUtil;
 import cn.bensun.elasticsearch.util.SearchRequestUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -44,12 +43,6 @@ public class ApiController {
     public BaseEntity group(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
         BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
-        if (obj.getSearchStartTime()!=null){
-            obj.setSearchEndTime(DateUtil.timestampAdd(obj.getSearchStartTime(), 1));
-        }
-        if (obj.getSearchPayStartTime()!=null){
-            obj.setSearchPayEndTime(DateUtil.timestampAdd(obj.getSearchPayStartTime(), 1));
-        }
         return SearchRequestUtil.searchAggregation(clazz, obj);
     }
 }

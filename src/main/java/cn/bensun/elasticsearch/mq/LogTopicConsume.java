@@ -29,7 +29,7 @@ public class LogTopicConsume {
 
     @Autowired
     private LogMsgRepository logMsgRepository;
-    Pattern pattern = Pattern.compile("\"requestId\":\"(.*?)\".*?\"create_time\":\"(.*?)\".*?\"msg\":\"(.*)\"");
+    Pattern pattern = Pattern.compile("\"requestId\":\"(.*?)\".*?\"create_time\":\"(.*?)\".*?\"msg\":\"(.*)");
 
     /**
      * @author weizongtang
