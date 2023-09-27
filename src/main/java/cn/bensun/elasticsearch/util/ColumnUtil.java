@@ -1,7 +1,5 @@
 package cn.bensun.elasticsearch.util;
 
-import cn.bensun.elasticsearch.domain.Collection;
-
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -107,11 +105,6 @@ public class ColumnUtil {
      * 参考示例
      */
     public static void main(String[] args) {
-
-        //实体类原字段名称返回
-        System.out.println();
-        System.out.println("实体类原字段名称返回");
-        System.out.println("字段名：" + ColumnUtil.getFieldName(Collection::getCreatedTime));
 
 
     }

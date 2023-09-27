@@ -55,7 +55,7 @@ public class EsDruidDataSourceConfig {
 
        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
        //配置mapper文件位置
-       sqlSessionFactoryBean.setMapperLocations(resolver.getResources(bigdataMapperLocations));
+//       sqlSessionFactoryBean.setMapperLocations(resolver.getResources(bigdataMapperLocations));
        sqlSessionFactoryBean.setConfigLocation(resolver.getResource(configLocation));
        return sqlSessionFactoryBean.getObject();
    }

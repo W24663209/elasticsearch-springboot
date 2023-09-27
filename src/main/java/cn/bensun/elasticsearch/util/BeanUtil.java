@@ -1,7 +1,6 @@
 package cn.bensun.elasticsearch.util;
 
 
-import cn.bensun.elasticsearch.domain.Collection;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.lang.reflect.Field;
@@ -45,9 +44,6 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     }
 
     public static void main(String[] args) {
-        Collection collection = new Collection();
-        Class t_collection = getTable("t_collection");
-        System.out.println(t_collection);
     }
 
     /**
