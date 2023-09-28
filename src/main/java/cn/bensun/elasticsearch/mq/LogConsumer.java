@@ -2,11 +2,14 @@ package cn.bensun.elasticsearch.mq;
 
 import cn.bensun.elasticsearch.domain.LogMsg;
 import cn.bensun.elasticsearch.mapper.LogMsgRepository;
-import com.alibaba.fastjson.JSONObject;
+import cn.bensun.elasticsearch.util.DateUtil;
+import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class LogConsumer {
     @Autowired
@@ -23,9 +26,17 @@ public class LogConsumer {
     public void receiveMessage(String message) {
         // 处理收到的消息逻辑
         try {
-            LogMsg logMsg = JSONObject.parseObject(message,LogMsg.class);
+            JSONObject jsonObject = JSONObject.parseObject(message);
+            LogMsg logMsg = new LogMsg();
+            logMsg.setCreatedTime(DateUtil.str2Time(jsonObject.getString("createdTime")).getTime());
+            logMsg.setRequestId(jsonObject.getString("requestId"));
+            logMsg.setDeviceName(jsonObject.getString("deviceName"));
+            logMsg.setLevel(jsonObject.getString("level"));
+            logMsg.setMethod(jsonObject.getString("method"));
+            logMsg.setMsg(jsonObject.getString("msg"));
             logMsgRepository.save(logMsg);
         } catch (Exception e) {
+            log.error("日志异常\t{}",message);
         }
     }
 }
