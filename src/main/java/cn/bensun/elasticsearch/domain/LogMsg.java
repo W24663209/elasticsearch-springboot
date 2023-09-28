@@ -22,12 +22,17 @@ public class LogMsg extends BaseEntity {
     @Id
     private String id;
 
-    @Field(name = "requestId", value = "requestId", type = FieldType.Text)
-    private String requestId;
-    @Field(name = "msg", value = "msg", type = FieldType.Text)
-    private String msg;
-
-    @Field(name = "created_time", value = "created_time", type = FieldType.Long)
+    @Field(name = "created_time", value = "created_time", type = FieldType.Long, fielddata = true)
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     private Long createdTime;//创建时间
+    @Field(name = "requestId", value = "requestId", type = FieldType.Text, fielddata = true)
+    private String requestId;
+    @Field(name = "deviceName", value = "deviceName", type = FieldType.Text, fielddata = true)
+    private String deviceName;
+    @Field(name = "level", value = "level", type = FieldType.Text, fielddata = true)
+    private String level;
+    @Field(name = "method", value = "method", type = FieldType.Text, fielddata = true)
+    private String method;
+    @Field(name = "msg", value = "msg", type = FieldType.Text, fielddata = true)
+    private String msg;
 }

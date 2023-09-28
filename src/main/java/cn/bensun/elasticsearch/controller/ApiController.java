@@ -4,6 +4,7 @@ import cn.bensun.elasticsearch.domain.BaseEntity;
 import cn.bensun.elasticsearch.domain.TableDataInfo;
 import cn.bensun.elasticsearch.util.BeanUtil;
 import cn.bensun.elasticsearch.util.SearchRequestUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +30,7 @@ public class ApiController {
     @ApiOperation(value = "列表查询")
     public TableDataInfo list(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
+        BaseEntity obj = ObjectUtil.isNotEmpty(req) ? (BaseEntity) JSON.to(clazz, req) : (BaseEntity) clazz.newInstance();
         return SearchRequestUtil.searchList(BeanUtil.getTable(table), obj);
     }
 
@@ -42,7 +43,7 @@ public class ApiController {
     @ApiOperation(value = "分组查询")
     public BaseEntity group(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
+        BaseEntity obj = ObjectUtil.isNotEmpty(req) ? (BaseEntity) JSON.to(clazz, req) : (BaseEntity) clazz.newInstance();
         return SearchRequestUtil.searchAggregation(clazz, obj);
     }
 }
