@@ -9,6 +9,6 @@ spring:
     host: 172.31.34.152
     port: 5672
     username: admin
-    password: 1234567
+    password: tyerui43675fdg
 server:
   port: 8099
