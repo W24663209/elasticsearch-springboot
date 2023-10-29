@@ -2,14 +2,14 @@ spring:
   datasource:
     es:
       driver-class-name: org.elasticsearch.xpack.sql.jdbc.EsDriver
-      url: jdbc:es://http://172.31.6.112:9200
+      url: jdbc:es://http://elasticsearch:9200
       configLocation: classpath:config/mybatis.cfg.xml
 
 rocketmq:
-  name-server: 172.31.6.112:9876 # RocketMQ Namesrv
+  name-server: rocketmq:9876 # RocketMQ Namesrv
   # Producer 配置项
   producer:
-    namesrv-addr: 172.31.6.112:9876
+    namesrv-addr: rocketmq:9876
     group: koala-dev-event-centre-group # 生产者分组
     send-message-timeout: 3000 # 发送消息超时时间，单位：毫秒。默认为 3000 。
     compress-message-body-threshold: 4096 # 消息压缩阀值，当消息体的大小超过该阀值后，进行消息压缩。默认为 4 * 1024B
