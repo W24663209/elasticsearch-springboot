@@ -30,6 +30,16 @@ public class BaseEntity implements Serializable {
 
     private Long searchEndTime;
 
+
+    private Long searchPayStartTime;
+
+    private Long searchPayEndTime;
+
+
+    private Long searchSubmitStartTime;
+
+    private Long searchSubmitEndTime;
+
     //聚合字段
     private Long count;
 
@@ -39,5 +49,21 @@ public class BaseEntity implements Serializable {
 
     public void setSearchEndTime(Long searchEndTime) {
         this.searchEndTime = searchEndTime != null ? Long.valueOf(String.valueOf(searchEndTime).substring(0, 10)) : searchEndTime;;
+    }
+
+    public void setSearchPayStartTime(Long searchPayStartTime) {
+        this.searchPayStartTime = searchPayStartTime != null ? Long.valueOf(String.valueOf(searchPayStartTime).substring(0, 10)) : searchPayStartTime;;
+    }
+
+    public void setSearchPayEndTime(Long searchPayEndTime) {
+        this.searchPayEndTime = searchPayEndTime != null ? Long.valueOf(String.valueOf(searchPayEndTime).substring(0, 10)) : searchPayEndTime;;
+    }
+
+    public void setSearchSubmitStartTime(Long searchSubmitStartTime) {
+        this.searchSubmitStartTime = searchSubmitStartTime != null ? Long.valueOf(String.valueOf(searchSubmitStartTime).substring(0, 10)) : searchSubmitStartTime;;
+    }
+
+    public void setSearchSubmitEndTime(Long searchSubmitEndTime) {
+        this.searchSubmitEndTime = searchSubmitEndTime != null ? Long.valueOf(String.valueOf(searchSubmitEndTime).substring(0, 10)) : searchSubmitEndTime;;
     }
 }

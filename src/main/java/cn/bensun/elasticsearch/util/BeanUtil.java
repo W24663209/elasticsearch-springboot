@@ -6,11 +6,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 /**
  * @author weizongtang
@@ -24,22 +22,20 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     private static Map<String, Class> tables = new HashMap<>();
     private static AtomicBoolean initFlag = new AtomicBoolean();
 
-    private static void init() {
+    private static void init() throws Exception {
         ClassLoader classLoader = BeanUtil.class.getClassLoader();
         Class clazz = ClassLoader.class;
-        try {
-            Field classes = clazz.getDeclaredField("classes");
-            classes.setAccessible(true);
-            Vector<Class<?>> classVector = (Vector<Class<?>>) classes.get(classLoader);//并发修改异常
-            List<Class<?>> collect = classVector.stream().collect(Collectors.toList());
-            for (Class<?> aClass : collect) {
-                if (aClass.isAnnotationPresent(Document.class)) {
-                    Document document = aClass.getAnnotation(Document.class);
-                    tables.put(document.indexName(), aClass);
+        Field classes = clazz.getDeclaredField("classes");
+        classes.setAccessible(true);
+        Vector<Class<?>> classVector = (Vector<Class<?>>) classes.get(classLoader);//并发修改异常
+        for (int i = 0; i < classVector.size(); i++) {
+            try {
+                if (classVector.get(i).isAnnotationPresent(Document.class)) {
+                    Document document = classVector.get(i).getAnnotation(Document.class);
+                    tables.put(document.indexName(), classVector.get(i));
                 }
+            } catch (Exception e) {
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         initFlag.getAndSet(true);
     }
@@ -57,7 +53,10 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
      */
     public static Class getTable(String tableName) {
         if (!initFlag.get()) {
-            init();
+            try {
+                init();
+            } catch (Exception e) {
+            }
         }
         return tables.get(tableName);
     }

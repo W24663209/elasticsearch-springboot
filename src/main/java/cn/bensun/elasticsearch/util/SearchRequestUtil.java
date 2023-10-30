@@ -73,6 +73,7 @@ public class SearchRequestUtil {
             }
         }
         List<Object> searchTime = new ArrayList<>();
+        List<Object> paySearchTime = new ArrayList<>();
         for (Field field : clazz.getSuperclass().getDeclaredFields()) {
             field.setAccessible(true);
             Object value = field.get(obj);
@@ -82,12 +83,22 @@ public class SearchRequestUtil {
                 } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
                     searchTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
                 }
+                if ("searchPayStartTime".equalsIgnoreCase(field.getName())) {
+                    paySearchTime.add(value);
+                } else if ("searchPayEndTime".equalsIgnoreCase(field.getName())) {
+                    paySearchTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
+                }
             }
         }
         if (searchTime.size() == 1) {
             boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
         } else if (searchTime.size() == 2) {
             boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
+        }
+        if (paySearchTime.size() == 1) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("pay_time").gte(paySearchTime.get(0)));
+        } else if (paySearchTime.size() == 2) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1)));
         }
         searchSourceBuilder.sort(new FieldSortBuilder("created_time").order(SortOrder.DESC));
         int pageNumber = pageNumberField.getInt(obj);
@@ -140,29 +151,50 @@ public class SearchRequestUtil {
                     if (ObjectUtil.isNotEmpty(value)) {
                         boolQueryBuilder.must(QueryBuilders.matchQuery(fieldAnnotation.name(), value));
                     }
-                    if (field.getType().equals(Double.class)){
+                    if (field.getType().equals(Double.class)) {
                         searchSourceBuilder.aggregation(AggregationBuilders.sum(fieldAnnotation.name()).field(fieldAnnotation.name()));
                     }
                 }
             }
         }
         List<Object> searchTime = new ArrayList<>();
-        {
-            for (Field field : fields) {
-                Object value = field.get(obj);
-                if (ObjectUtil.isNotEmpty(value)) {
-                    if ("searchStartTime".equalsIgnoreCase(field.getName())) {
-                        searchTime.add(value);
-                    } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
-                        searchTime.add(value);
-                    }
+        List<Object> paySearchTime = new ArrayList<>();
+        List<Object> searchSubmitTime = new ArrayList<>();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Object value = field.get(obj);
+            if (ObjectUtil.isNotEmpty(value)) {
+                if ("searchStartTime".equalsIgnoreCase(field.getName())) {
+                    searchTime.add(value);
+                } else if ("searchEndTime".equalsIgnoreCase(field.getName())) {
+                    searchTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
+                }
+                if ("searchPayStartTime".equalsIgnoreCase(field.getName())) {
+                    paySearchTime.add(value);
+                } else if ("searchPayEndTime".equalsIgnoreCase(field.getName())) {
+                    paySearchTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
+                }
+                if ("searchSubmitStartTime".equalsIgnoreCase(field.getName())) {
+                    searchSubmitTime.add(value);
+                } else if ("searchSubmitEndTime".equalsIgnoreCase(field.getName())) {
+                    searchSubmitTime.add(DateUtil.timestampAdd(Long.parseLong(value.toString()), 1));
                 }
             }
-            if (searchTime.size() == 1) {
-                boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
-            } else if (searchTime.size() == 2) {
-                boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
-            }
+        }
+        if (searchTime.size() == 1) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)));
+        } else if (searchTime.size() == 2) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("created_time").gte(searchTime.get(0)).lt(searchTime.get(1)));
+        }
+        if (paySearchTime.size() == 1) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("pay_time").gte(paySearchTime.get(0)));
+        } else if (paySearchTime.size() == 2) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1)));
+        }
+        if (searchSubmitTime.size() == 1) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("submit_time").gte(searchSubmitTime.get(0)));
+        } else if (searchSubmitTime.size() == 2) {
+            boolQueryBuilder.must(QueryBuilders.rangeQuery("submit_time").gte(searchSubmitTime.get(0)).lt(searchSubmitTime.get(1)));
         }
         searchSourceBuilder.query(boolQueryBuilder);
         searchRequest.source(searchSourceBuilder);

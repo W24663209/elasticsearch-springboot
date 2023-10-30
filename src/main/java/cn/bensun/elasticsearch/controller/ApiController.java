@@ -3,7 +3,6 @@ package cn.bensun.elasticsearch.controller;
 import cn.bensun.elasticsearch.domain.BaseEntity;
 import cn.bensun.elasticsearch.domain.TableDataInfo;
 import cn.bensun.elasticsearch.util.BeanUtil;
-import cn.bensun.elasticsearch.util.DateUtil;
 import cn.bensun.elasticsearch.util.SearchRequestUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -28,9 +27,9 @@ public class ApiController {
      */
     @PostMapping("/list/{table}")
     @ApiOperation(value = "列表查询")
-    public TableDataInfo list(@PathVariable String table,@RequestBody JSONObject req) throws Exception {
+    public TableDataInfo list(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj =(BaseEntity) JSON.to(clazz, req);
+        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
         return SearchRequestUtil.searchList(BeanUtil.getTable(table), obj);
     }
 
@@ -41,10 +40,9 @@ public class ApiController {
      */
     @PostMapping("/group/{table}")
     @ApiOperation(value = "分组查询")
-    public BaseEntity group(@PathVariable String table,@RequestBody JSONObject req) throws Exception {
+    public BaseEntity group(@PathVariable String table, @RequestBody JSONObject req) throws Exception {
         Class clazz = BeanUtil.getTable(table);
-        BaseEntity obj =(BaseEntity) JSON.to(clazz, req);
-        obj.setSearchEndTime(DateUtil.timestampAdd(obj.getSearchStartTime(), 1));
+        BaseEntity obj = (BaseEntity) JSON.to(clazz, req);
         return SearchRequestUtil.searchAggregation(clazz, obj);
     }
 }
