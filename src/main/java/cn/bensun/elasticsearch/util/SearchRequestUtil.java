@@ -68,7 +68,7 @@ public class SearchRequestUtil {
                 org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
-                    boolQueryBuilder.must(QueryBuilders.wildcardQuery(fieldAnnotation.name(), String.valueOf(value)));
+                    boolQueryBuilder.must(QueryBuilders.wildcardQuery(fieldAnnotation.name(), String.format("*%s*", value).trim()));
                 }
             }
         }
