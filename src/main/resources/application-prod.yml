@@ -2,11 +2,11 @@ spring:
   datasource:
     es:
       driver-class-name: org.elasticsearch.xpack.sql.jdbc.EsDriver
-      url: jdbc:es://http://172.31.34.152:9200
+      url: jdbc:es://http://172.31.9.86:9200
       mapperLocations: classpath:mapper/sql/*.xml
       configLocation: classpath:config/mybatis.cfg.xml
   rabbitmq:
-    host: 172.31.34.152
+    host: 172.31.9.86
     port: 5672
     username: admin
     password: tyerui43675fdg
