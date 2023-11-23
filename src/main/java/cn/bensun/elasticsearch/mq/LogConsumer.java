@@ -41,6 +41,7 @@ public class LogConsumer {
             logMsgRepository.save(logMsg);
         } catch (Exception e) {
             log.error("日志异常\t{}", message);
+//            throw e;
         }
     }
 }

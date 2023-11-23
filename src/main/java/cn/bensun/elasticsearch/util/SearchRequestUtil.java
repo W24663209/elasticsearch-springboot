@@ -68,7 +68,8 @@ public class SearchRequestUtil {
                 org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
-                    boolQueryBuilder.must(QueryBuilders.wildcardQuery(fieldAnnotation.name(), String.format("*%s*", value).trim()));
+                    boolQueryBuilder.must(QueryBuilders.matchQuery(fieldAnnotation.name(), String.format("*%s*", value).trim()));
+//                    boolQueryBuilder.must(QueryBuilders.regexpQuery(fieldAnnotation.name(), value.toString().trim()));
                 }
             }
         }
@@ -126,7 +127,7 @@ public class SearchRequestUtil {
      * @author weizongtang
      * @CreateTime 2023/03/17 15:53:14
      */
-    public static <T> T searchAggregation(Class<?> clazz, T obj) throws Exception {
+    public static <T> T searchAggregation(Class<?> clazz, Object obj) throws Exception {
         Document annotation = clazz.getAnnotation(Document.class);
         SearchRequest searchRequest = new SearchRequest(annotation.indexName());
         searchRequest.types(annotation.type());

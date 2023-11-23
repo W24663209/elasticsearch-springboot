@@ -1,19 +1,14 @@
 package cn.bensun.elasticsearch;
 
-import cn.bensun.elasticsearch.domain.Collection;
+import cn.bensun.elasticsearch.util.BeanUtil;
+import cn.bensun.elasticsearch.util.SpringContextUtils;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ExitCodeEvent;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest(classes = ElasticsearchApplication.class)
 class ElasticsearchApplicationTests {
@@ -60,8 +55,10 @@ class ElasticsearchApplicationTests {
 
     @Test
     public void insert() throws IOException {
-        elasticsearchRestTemplate.createIndex(Collection.class);
-//        elasticsearchRestTemplate.createIndex(Collection.class);
+        Class clazz = BeanUtil.getTable("t_call_back_log_msg");
+        System.out.println(String.format("%sRepository", clazz.getSimpleName()));
+        Object bean = SpringContextUtils.getBean(String.format("%sRepository", clazz.getSimpleName()));
+        System.out.println(bean);
     }
 
 }

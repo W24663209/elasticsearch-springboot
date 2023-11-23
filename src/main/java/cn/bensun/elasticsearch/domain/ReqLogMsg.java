@@ -8,31 +8,31 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
- * @author weizongtang
- * @Description
- * @CreateTime 2023/04/03 16:11:55
+ *
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Document(indexName = "t_log_msg", type = "t_log_msg")
+@Document(indexName = "t_req_log_msg", type = "t_req_log_msg")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LogMsg extends BaseEntity {
+public class ReqLogMsg extends BaseEntity {
     @Id
     private String id;
-
     @Field(name = "created_time", value = "created_time", type = FieldType.Long)
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     private Long createdTime;//创建时间
-    @Field(name = "requestId", value = "requestId", type = FieldType.Text, fielddata = true)
-    private String requestId;
     @Field(name = "deviceName", value = "deviceName", type = FieldType.Text, fielddata = true)
     private String deviceName;
-    @Field(name = "level", value = "level", type = FieldType.Text, fielddata = true)
-    private String level;
     @Field(name = "method", value = "method", type = FieldType.Text, fielddata = true)
     private String method;
-    @Field(name = "msg", value = "msg", type = FieldType.Text, fielddata = true)
-    private String msg;
+    @Field(name = "request_url", value = "request_url", type = FieldType.Text, fielddata = true)
+    private String requestUrl;
+    @Field(name = "request_method", value = "request_method", type = FieldType.Text, fielddata = true)
+    private String requestMethod;
+    @Field(name = "request_body", value = "request_body", type = FieldType.Text, fielddata = true)
+    private String requestBody;
+    @Field(name = "response_body", value = "response_body", type = FieldType.Text, fielddata = true)
+    private String responseBody;
+
 }
