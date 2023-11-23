@@ -67,6 +67,7 @@ public class SynEsTableConsume {
                     }
                 }else{
                     for (Collection collection : collections) {
+                        collectionRepository.deleteById(collection.getId());
                         collectionRepository.save(collection);
                     }
                 }
@@ -75,10 +76,11 @@ public class SynEsTableConsume {
                 syncEsTable.setDate(payments);
                 if (SqlOperateEnum.删除.getCode().equalsIgnoreCase(syncEsTable.getType())){
                     for (Payment payment : payments) {
-                        paymentRepository.delete(payment);
+                        paymentRepository.deleteById(payment.getId());
                     }
                 }else {
                     for (Payment payment : payments) {
+                        paymentRepository.deleteById(payment.getId());
                         paymentRepository.save(payment);
                     }
                 }
