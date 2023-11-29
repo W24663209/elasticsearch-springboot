@@ -76,7 +76,7 @@ public class ColumnUtil {
         }
 
         // 从field取出字段名，可以根据实际情况调整
-        org.springframework.data.elasticsearch.annotations.Field fieldAnnotation = field.getAnnotation(org.springframework.data.elasticsearch.annotations.Field.class);
+        org.springframework.data.mongodb.core.mapping.Field fieldAnnotation = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class);
         return fieldAnnotation.name();
     }
 

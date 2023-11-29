@@ -2,7 +2,7 @@ package cn.bensun.elasticsearch.util;
 
 
 import lombok.SneakyThrows;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,18 +11,18 @@ import java.util.List;
 
 public class Sql2Elasticsearch {
     enum Type {
-        VARCHAR("String", null, FieldType.Text),
-        BIGINT("Long", null, FieldType.Long),
-        DECIMAL("Double", null, FieldType.Double),
-        INT("Integer", null, FieldType.Integer),
-        TINYINT("Integer", null, FieldType.Integer),
-        TIMESTAMP("Long", null, FieldType.Long),
-        DATE("Long", null, FieldType.Long),
+        VARCHAR("String", null, FieldType.STRING),
+        BIGINT("Long", null, FieldType.INT64),
+        DECIMAL("Double", null, FieldType.DOUBLE),
+        INT("Integer", null, FieldType.INT32),
+        TINYINT("Integer", null, FieldType.INT32),
+        TIMESTAMP("Long", null, FieldType.INT64),
+        DATE("Long", null, FieldType.INT64),
         //        TIMESTAMP("String", null),
-        TEXT("String", null, FieldType.Text),
-        DOUBLE("Double", null, FieldType.Double),
-        MEDIUMTEXT("String", null, FieldType.Text),
-        LONGTEXT("String", null, FieldType.Text);
+        TEXT("String", null, FieldType.STRING),
+        DOUBLE("Double", null, FieldType.DOUBLE),
+        MEDIUMTEXT("String", null, FieldType.STRING),
+        LONGTEXT("String", null, FieldType.STRING);
 
         private String value;
 
@@ -46,7 +46,7 @@ public class Sql2Elasticsearch {
 
         private static List<String> imports = new ArrayList<>(Arrays.asList("import lombok.Builder;", "import lombok.Data;",
                 "import org.springframework.data.annotation.Id;", "import org.springframework.data.elasticsearch.annotations.Document;", "import org.springframework.data.elasticsearch.annotations" +
-                        ".Field;", "import lombok.AllArgsConstructor;", "import lombok.NoArgsConstructor;","import org.springframework.data.elasticsearch.annotations.FieldType;","import com.fasterxml.jackson.annotation.JsonFormat;"));
+                        ".Field;", "import lombok.AllArgsConstructor;", "import lombok.NoArgsConstructor;","import org.springframework.data.mongodb.core.mapping.FieldType;","import com.fasterxml.jackson.annotation.JsonFormat;"));
 
         private static StringBuffer filedSb = new StringBuffer();
 

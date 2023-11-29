@@ -33,6 +33,11 @@ public class ApiController {
         return SearchRequestUtil.searchList(BeanUtil.getTable(table), obj);
     }
 
+    public static void main(String[] args) {
+        Class clazz = BeanUtil.getTable("t_collection");
+        System.out.println(clazz);
+    }
+
     /**
      * @Description 分组查询
      * @CreatedBy weizongtang

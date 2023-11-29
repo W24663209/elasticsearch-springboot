@@ -16,12 +16,8 @@
     <properties>
         <java.version>8</java.version>
         <fastjson.version>1.2.79</fastjson.version>
-        <elasticsearch.version>6.8.2</elasticsearch.version>
         <hutool.version>5.3.5</hutool.version>
-        <mybatis.version>2.2.0</mybatis.version>
-        <elasticsearch-sql.version>6.8.13.0</elasticsearch-sql.version>
         <druid.version>1.2.8</druid.version>
-        <mysql.version>8.0.11</mysql.version>
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
         <swagger.version>2.7.0</swagger.version>
         <swagger-ui.version>1.7.1</swagger-ui.version>
@@ -50,11 +46,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-elasticsearch -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -78,41 +69,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--es自带插件-->
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>x-pack-sql-jdbc</artifactId>
-            <version>${elasticsearch.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>${mybatis.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>transport-netty4-client</artifactId>
-            <version>${elasticsearch.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>transport</artifactId>
-            <version>${elasticsearch.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>${elasticsearch.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.nlpcn/elasticsearch-sql -->
-        <dependency>
-            <groupId>org.nlpcn</groupId>
-            <artifactId>elasticsearch-sql</artifactId>
-            <version>${elasticsearch-sql.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -120,13 +76,6 @@
             <version>${druid.version}</version>
         </dependency>
 
-        <!--mysql驱动-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -157,15 +106,20 @@
             <version>${swagger-ui.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
     </dependencies>
 
-    <repositories>
-        <!--依赖es库-->
-        <repository>
-            <id>elastic.co</id>
-            <url>https://artifacts.elastic.co/maven</url>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        &lt;!&ndash;依赖es库&ndash;&gt;-->
+<!--        <repository>-->
+<!--            <id>elastic.co</id>-->
+<!--            <url>https://artifacts.elastic.co/maven</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
     <build>
         <resources>
