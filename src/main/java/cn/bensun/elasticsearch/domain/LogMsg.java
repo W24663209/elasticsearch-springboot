@@ -23,12 +23,12 @@ public class LogMsg extends BaseEntity {
     @Id
     private String id;
 
-    @Field(name = "requestId", value = "requestId", targetType = FieldType.STRING)
+    @Field(name = "requestId", targetType = FieldType.STRING)
     private String requestId;
-    @Field(name = "msg", value = "msg", targetType = FieldType.STRING)
+    @Field(name = "msg", targetType = FieldType.STRING)
     private String msg;
 
-    @Field(name = "created_time", value = "created_time", targetType = FieldType.INT64)
+    @Field(name = "created_time", targetType = FieldType.INT64)
     @JsonFormat(pattern = "yyyy-mm-dd hh:mm:ss")
     private Long createdTime;//创建时间
 }

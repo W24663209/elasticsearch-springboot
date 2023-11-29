@@ -97,7 +97,7 @@ public class SearchRequestUtil {
                 Object value = field.get(obj);
                 if (ObjectUtil.isNotEmpty(value)) {
                     // 添加其他查询条件，如果需要
-                    query.addCriteria(Criteria.where(fieldAnnotation.name()).regex(String.valueOf(value + ".*"), "i"));
+                    query.addCriteria(Criteria.where(fieldAnnotation.name()).regex(value + ".*", "i"));
                 }
             }
         }

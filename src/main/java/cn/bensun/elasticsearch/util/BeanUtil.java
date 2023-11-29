@@ -4,6 +4,8 @@ package cn.bensun.elasticsearch.util;
 import cn.bensun.elasticsearch.domain.Collection;
 import cn.bensun.elasticsearch.domain.LogMsg;
 import cn.bensun.elasticsearch.domain.Payment;
+import cn.hutool.core.util.ObjectUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Description bean工具
  * @CreateTime 2023/03/20 13:15:29
  */
+@Slf4j
 public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     private BeanUtil() {
     }
@@ -47,6 +50,12 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
      * @CreateTime 2023/03/20 13:21:35
      */
     public static Class getTable(String tableName) {
-        return tables.get(tableName);
+        Class clazz = tables.get(tableName);
+        log.info("实体类:{}", clazz);
+        if (ObjectUtil.isEmpty(clazz)) {
+            throw new RuntimeException("没配置实体类");
+        } else {
+            return clazz;
+        }
     }
 }
