@@ -3,7 +3,6 @@ package cn.bensun.elasticsearch.mq;
 import cn.bensun.elasticsearch.domain.LogMsg;
 import cn.bensun.elasticsearch.enums.RocketMQTopicConstants;
 import cn.bensun.elasticsearch.mapper.LogMsgRepository;
-import cn.bensun.elasticsearch.util.DateUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -50,10 +49,10 @@ public class LogTopicConsume {
             LogMsg logMsg = null;
             try {
                 logMsg = JSON.parseObject(str, LogMsg.class);
-                String createTime = JSON.parseObject(str).getString("create_time");
-                if (createTime != null) {
-                    logMsg.setCreatedTime(DateUtil.str2Time(createTime).getTime());
-                }
+//                String createTime = JSON.parseObject(str).getString("create_time");
+//                if (createTime != null) {
+//                    logMsg.setCreatedTime(DateUtil.str2Time(createTime).getTime());
+//                }
                 logMsgRepository.save(logMsg);
             } catch (Exception e) {
                 Matcher matcher = pattern.matcher(str);
@@ -63,9 +62,9 @@ public class LogTopicConsume {
                     String msg = matcher.group(3);
                     logMsg = new LogMsg();
                     logMsg.setRequestId(requestId);
-                    if (createTime != null) {
-                        logMsg.setCreatedTime(DateUtil.str2Time(createTime).getTime());
-                    }
+//                    if (createTime != null) {
+//                        logMsg.setCreatedTime(DateUtil.str2Time(createTime).getTime());
+//                    }
                     logMsg.setMsg(msg);
                     logMsgRepository.save(logMsg);
                 }
