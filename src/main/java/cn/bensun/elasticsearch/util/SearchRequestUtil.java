@@ -84,11 +84,9 @@ public class SearchRequestUtil {
             criteria = new Criteria();
         }
         Query query = new Query(criteria);
-        int page = pageNumberField.getInt(obj);
+        int page = pageNumberField.getInt(obj)-1;
         int size = pageSizeField.getInt(obj);
         Pageable pageable = PageRequest.of(page, size);
-        query.with(pageable);
-        query.with(Sort.by(Sort.Direction.DESC, "created_time"));
         //条件
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
@@ -101,10 +99,12 @@ public class SearchRequestUtil {
                 }
             }
         }
+        long totalCount = mongoTemplate.count(query, clazz);
+        query.with(pageable);
+        query.with(Sort.by(Sort.Direction.DESC, "created_time"));
         // 执行查询，获取符合条件的结果集
         List<T> list = mongoTemplate.find(query, clazz);
         // 计算总记录数
-        long totalCount = mongoTemplate.count(query, clazz);
         return TableDataInfo.getInstance(list, totalCount);
     }
 
