@@ -63,28 +63,28 @@ public class SearchRequestUtil {
         }
         Criteria criteria = null;
         if (searchTime.size() == 1) {
-            criteria = Criteria.where("created_time").gte(searchTime.get(0));
+            criteria = Criteria.where("created_time").gte(DateUtil.longToStr(searchTime.get(0)));
         } else if (searchTime.size() == 2) {
-            criteria = Criteria.where("created_time").gte(searchTime.get(0)).lt(searchTime.get(1));
+            criteria = Criteria.where("created_time").gte(DateUtil.longToStr(searchTime.get(0))).lte(DateUtil.longToStr(searchTime.get(1)));
         }
         if (paySearchTime.size() == 1) {
             if (ObjectUtil.isNotEmpty(criteria)) {
-                criteria.and("pay_time").gte(searchTime.get(0));
+                criteria.and("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0)));
             } else {
-                criteria = Criteria.where("pay_time").gte(searchTime.get(0));
+                criteria = Criteria.where("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0)));
             }
         } else if (paySearchTime.size() == 2) {
             if (ObjectUtil.isNotEmpty(criteria)) {
-                criteria.and("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1));
+                criteria.and("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0))).lte(DateUtil.longToStr(paySearchTime.get(1)));
             } else {
-                criteria = Criteria.where("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1));
+                criteria = Criteria.where("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0))).lte(DateUtil.longToStr(paySearchTime.get(1)));
             }
         }
         if (ObjectUtil.isEmpty(criteria)) {
             criteria = new Criteria();
         }
         Query query = new Query(criteria);
-        int page = pageNumberField.getInt(obj)-1;
+        int page = pageNumberField.getInt(obj) - 1;
         int size = pageSizeField.getInt(obj);
         Pageable pageable = PageRequest.of(page, size);
         //条件
@@ -102,6 +102,10 @@ public class SearchRequestUtil {
         long totalCount = mongoTemplate.count(query, clazz);
         query.with(pageable);
         query.with(Sort.by(Sort.Direction.DESC, "created_time"));
+        // 将Query对象转换为MongoDB查询语句
+        String queryStatement = mongoTemplate.getCollectionName(SearchRequestUtil.class) + ".find(" + query.getQueryObject() + ")";
+        // 打印查询语句
+        log.info("MongoDB查询语句: {}", queryStatement);
         // 执行查询，获取符合条件的结果集
         List<T> list = mongoTemplate.find(query, clazz);
         // 计算总记录数
@@ -135,21 +139,21 @@ public class SearchRequestUtil {
         }
         Criteria criteria = null;
         if (searchTime.size() == 1) {
-            criteria = Criteria.where("created_time").gte(searchTime.get(0));
+            criteria = Criteria.where("created_time").gte(DateUtil.longToStr(searchTime.get(0)));
         } else if (searchTime.size() == 2) {
-            criteria = Criteria.where("created_time").gte(searchTime.get(0)).lt(searchTime.get(1));
+            criteria = Criteria.where("created_time").gte(DateUtil.longToStr(searchTime.get(0))).lte(DateUtil.longToStr(searchTime.get(1)));
         }
         if (paySearchTime.size() == 1) {
             if (ObjectUtil.isNotEmpty(criteria)) {
-                criteria.and("pay_time").gte(searchTime.get(0));
+                criteria.and("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0)));
             } else {
-                criteria = Criteria.where("pay_time").gte(searchTime.get(0));
+                criteria = Criteria.where("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0)));
             }
         } else if (paySearchTime.size() == 2) {
             if (ObjectUtil.isNotEmpty(criteria)) {
-                criteria.and("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1));
+                criteria.and("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0))).lte(DateUtil.longToStr(paySearchTime.get(1)));
             } else {
-                criteria = Criteria.where("pay_time").gte(paySearchTime.get(0)).lt(paySearchTime.get(1));
+                criteria = Criteria.where("pay_time").gte(DateUtil.longToStr(paySearchTime.get(0))).lte(DateUtil.longToStr(paySearchTime.get(1)));
             }
         }
         if (ObjectUtil.isEmpty(criteria)) {
@@ -177,7 +181,6 @@ public class SearchRequestUtil {
                 matchStage,
                 groupStage
         );
-
         AggregationResults<?> results =
                 mongoTemplate.aggregate(aggregation, clazz, clazz);
         return (T) results.getMappedResults();

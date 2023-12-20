@@ -75,7 +75,7 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
      * @CreateTime 2022/12/07 13:57:14
      */
     public static String date2str(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
     }
 
@@ -172,6 +172,10 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
             list.add(dateToTimestamp(date, -i));
         }
         return list;
+    }
+
+    public static String longToStr(Object obj) {
+        return DateUtil.date2str(new Date(Long.parseLong(obj.toString()) * 1000L));
     }
 
     public static void main(String[] args) {
